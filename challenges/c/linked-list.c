@@ -3,45 +3,93 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-struct node {
+struct Node {
   int data;
   
-  struct node *next;
-  struct node *prev;
+  struct Node *next;
+  struct Node *prev;
 };
 
-struct node *insert(struct node *head, int data) {
-  struct node *newNode = (struct node*) malloc(sizeof(struct node));
+struct DoubleLinkedList {
+  struct Node *head;
+  struct Node *tail;
+};
+
+struct DoubleLinkedList *insert(struct DoubleLinkedList *ll, int data) {
+  struct Node *newNode = (struct Node*) malloc(sizeof(struct Node));
   newNode->data = data;
   newNode->next = NULL;
   
-
-  if (head == NULL) {
+  if (ll->head == NULL) {
     newNode->prev = NULL;
-    head = newNode;
+    ll->head = newNode;
+    ll->tail = newNode;
   } else {
-    struct node *current = NULL;
-    for (current = head; current->next != NULL; current = current->next) {}
-
-    newNode->prev = current;
-    current->next = newNode;
+    newNode->prev = ll->tail;
+    ll->tail->next = newNode;
+    ll->tail = newNode;
   }
 
-  return head;
+  return ll;
+}
+
+struct Node *delete(struct DoubleLinkedList *ll, int data) {
+  printf("  delete %d\n", data);
+
+  struct Node *current = NULL;
+  for (current = ll->head; current != NULL; current = current->next) {
+    if (current->data == data)
+      break;
+  }
+
+  if (current) {
+    if (current == ll->head) {
+      ll->head = ll->head->next;
+      if (ll->head == NULL)
+        ll->tail = NULL;
+    } else if (current == ll->tail) {
+      ll->tail = ll->tail->prev;
+      ll->tail->next = NULL;
+    } else {
+      current->prev->next = current->next;
+      current->next->prev = current->prev;
+    }
+
+    current->next = NULL;
+    current->prev = NULL;
+  }
+
+  return current;
+}
+
+void printAll(struct DoubleLinkedList *ll) {
+  struct Node *current = NULL;
+  for (current = ll->head; current != NULL; current = current->next) {
+    printf("data = %d\n", current->data);
+  }
+  printf("\n");
 }
 
 int main() {
-  struct node *head = NULL;
+  struct DoubleLinkedList *ll = (struct DoubleLinkedList*) malloc(sizeof(struct DoubleLinkedList));
+  ll->head = NULL;
+  ll->tail = NULL;
 
-  head = insert(head, 100);
-  head = insert(head, 200);
-  head = insert(head, 300);
+  ll = insert(ll, 100);
+  ll = insert(ll, 200);
+  ll = insert(ll, 300);
+  ll = insert(ll, 400);
+  printAll(ll);
 
-  struct node *current = NULL;
-  for (current = head; current != NULL; current = current->next) {
-    printf("data = %d\n", current->data);
-  }
-
+  struct Node *deletedNode = delete(ll, 100);
+  printAll(ll);
+  deletedNode = delete(ll, 400);
+  deletedNode = delete(ll, 400);
+  printAll(ll);
+  deletedNode = delete(ll, 300);
+  printAll(ll);
+  deletedNode = delete(ll, 200);
+  printAll(ll);
 
   return 0;
 }
