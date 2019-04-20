@@ -3,17 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-struct Node {
-  int data;
-  
-  struct Node *next;
-  struct Node *prev;
-};
-
-struct DoubleLinkedList {
-  struct Node *head;
-  struct Node *tail;
-};
+#include "linked-list.h"
 
 struct DoubleLinkedList *insert(struct DoubleLinkedList *ll, int data) {
   struct Node *newNode = (struct Node*) malloc(sizeof(struct Node));
@@ -33,9 +23,7 @@ struct DoubleLinkedList *insert(struct DoubleLinkedList *ll, int data) {
   return ll;
 }
 
-struct Node *delete(struct DoubleLinkedList *ll, int data) {
-  printf("  delete %d\n", data);
-
+struct Node *deleteNode(struct DoubleLinkedList *ll, int data) {
   struct Node *current = NULL;
   for (current = ll->head; current != NULL; current = current->next) {
     if (current->data == data)
@@ -70,27 +58,12 @@ void printAll(struct DoubleLinkedList *ll) {
   printf("\n");
 }
 
-int main() {
-  struct DoubleLinkedList *ll = (struct DoubleLinkedList*) malloc(sizeof(struct DoubleLinkedList));
-  ll->head = NULL;
-  ll->tail = NULL;
-
-  ll = insert(ll, 100);
-  ll = insert(ll, 200);
-  ll = insert(ll, 300);
-  ll = insert(ll, 400);
-  printAll(ll);
-
-  struct Node *deletedNode = delete(ll, 100);
-  printAll(ll);
-  deletedNode = delete(ll, 400);
-  deletedNode = delete(ll, 400);
-  printAll(ll);
-  deletedNode = delete(ll, 300);
-  printAll(ll);
-  deletedNode = delete(ll, 200);
-  printAll(ll);
-
-  return 0;
+int getLength(struct DoubleLinkedList *ll) {
+  struct Node *current = NULL;
+  int length = 0;
+  for (current = ll->head; current != NULL; 
+        length += 1,
+        current = current->next
+      ) {}
+  return length;
 }
-
