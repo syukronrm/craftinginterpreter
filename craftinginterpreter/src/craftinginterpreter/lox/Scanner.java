@@ -72,9 +72,9 @@ public class Scanner {
             case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
             case '/':
                 if (match('/')) {
-                    while(peek() != '\n' && !isAtEnd()) advance();
+                    while (peek() != '\n' && !isAtEnd()) advance();
                 } else if (match('*')) {
-                    while(peek() != '*' && peekNext() != '/') {
+                    while (peek() != '*' && peekNext() != '/') {
                         advance();
                     }
 
@@ -133,7 +133,7 @@ public class Scanner {
     }
 
     private void string() {
-        while(peek() != '"' && !isAtEnd()) {
+        while (peek() != '"' && !isAtEnd()) {
             if (peek() == '\n') line++;
             advance();
         }
@@ -156,7 +156,7 @@ public class Scanner {
         if (peek() == '.' && isDigit(peekNext())) {
             advance();
 
-            while(isDigit(peek())) advance();
+            while (isDigit(peek())) advance();
         }
 
         addToken(NUMBER,
