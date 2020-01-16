@@ -30,5 +30,9 @@ public class AstPrinterRpn implements Expr.Visitor<String> {
     }
 
     @Override
-    public String visitTernaryExpr(Expr.Ternary expr) { return expr.first.accept(this) + " " + expr.second.accept(this) + " " + expr.third.accept(this) + " ?:";}
+    public String visitTernaryExpr(Expr.Ternary expr) {
+        return expr.first.accept(this) + " " +
+                expr.second.accept(this) + " ? " +
+                expr.third.accept(this) + " : ";
+    }
 }
