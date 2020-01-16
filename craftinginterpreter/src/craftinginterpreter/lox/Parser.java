@@ -23,7 +23,21 @@ public class Parser {
     }
 
     private Expr expression() {
-        return commaExpression();
+        return ternaryExpression();
+    }
+
+    private Expr ternaryExpression() {
+        Expr expr = commaExpression();
+
+        while (match(QUESTION)) {
+            Token question = previous();
+            Expr expr2 = commaExpression();
+            consume(COLON, "Expect : after expression.");
+            Expr expr3 = commaExpression();
+            expr = new Expr.Ternary(expr, expr2, expr3);
+        }
+
+        return expr;
     }
 
     private Expr commaExpression() {

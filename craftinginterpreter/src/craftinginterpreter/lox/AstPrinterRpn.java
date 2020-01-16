@@ -28,4 +28,7 @@ public class AstPrinterRpn implements Expr.Visitor<String> {
     public String visitUnaryExpr(Expr.Unary expr) {
         return expr.right.accept(this) + " " + expr.operator.lexeme;
     }
+
+    @Override
+    public String visitTernaryExpr(Expr.Ternary expr) { return expr.first.accept(this) + " " + expr.second.accept(this) + " " + expr.third.accept(this) + " ?:";}
 }
