@@ -1,10 +1,13 @@
 package craftinginterpreter.lox;
 
-public class Interpreter implements Expr.Visitor<Object> {
-    void interpret(Expr expression) {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement: statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
@@ -66,6 +69,11 @@ public class Interpreter implements Expr.Visitor<Object> {
                 throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             case SLASH:
                 checkNumberOperands(expr.operator, left, right);
+
+                if (isZero(right)) {
+                    throw new RuntimeError(expr.operator, "Division by zero");
+                }
+
                 return (double)left / (double)right;
             case STAR:
                 checkNumberOperands(expr.operator, left, right);
@@ -81,8 +89,25 @@ public class Interpreter implements Expr.Visitor<Object> {
                 evaluate(expr.second) : evaluate(expr.third);
     }
 
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
     private Object evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
     }
 
     private void checkNumberOperand(Token operator, Object operand) {
@@ -108,6 +133,11 @@ public class Interpreter implements Expr.Visitor<Object> {
         if (a == null) return false;
 
         return a.equals(b);
+    }
+
+    private boolean isZero(Object object) {
+        String number = object.toString();
+        return number.equals("0.0");
     }
 
     private String stringify(Object object) {
