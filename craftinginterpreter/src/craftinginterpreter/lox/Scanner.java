@@ -98,11 +98,6 @@ public class Scanner {
                 line++;
                 break;
             case '"': string(); break;
-            case 'o':
-                if (peek() == 'r') {
-                    addToken(OR);
-                }
-                break;
 
             default:
                 if (isDigit(c)) {
