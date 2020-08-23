@@ -145,6 +145,12 @@ public class Parser {
             return new Expr.Grouping(expr);
         }
 
+        if (match(PLUS, SLASH, STAR, BANG, BANG_EQUAL, EQUAL_EQUAL,
+                GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
+        ) {
+            throw error(previous(), "This is a binary operator, expect expression before '" + previous().lexeme + "'.");
+        }
+
         throw error(peek(), "Expect expression.");
     }
 
