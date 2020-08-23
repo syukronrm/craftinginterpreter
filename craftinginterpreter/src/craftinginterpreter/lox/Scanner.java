@@ -74,9 +74,12 @@ public class Scanner {
             case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
             case '/':
                 if (match('/')) {
+                    // Comment till end of the line.
                     while (peek() != '\n' && !isAtEnd()) advance();
                 } else if (match('*')) {
+                    // Comment till '*/'
                     while (peek() != '*' && peekNext() != '/') {
+                        if (peek() == '\n') line++;
                         advance();
                     }
 
@@ -89,7 +92,7 @@ public class Scanner {
             case ' ':
             case '\r':
             case '\t':
-                // ignore whitespace
+                // Ignore whitespace
                 break;
             case '\n':
                 line++;
@@ -100,7 +103,6 @@ public class Scanner {
                     addToken(OR);
                 }
                 break;
-
 
             default:
                 if (isDigit(c)) {
