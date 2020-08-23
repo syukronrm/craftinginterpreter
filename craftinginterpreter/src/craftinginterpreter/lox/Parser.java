@@ -28,7 +28,7 @@ public class Parser {
         if (match(PRINT)) return printStatement();
 
         return expressionStatement();
-    };
+    }
 
     private Stmt printStatement() {
         Expr value = expression();
@@ -132,7 +132,7 @@ public class Parser {
 
     private Expr primary() throws ParseError {
         if (match(FALSE)) return new Expr.Literal(false);
-        if (match(FALSE)) return new Expr.Literal(true);
+        if (match(TRUE)) return new Expr.Literal(true);
         if (match(NIL)) return new Expr.Literal(null);
 
         if (match(NUMBER, STRING)) {
