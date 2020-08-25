@@ -30,8 +30,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case BANG:
                 return !isTruthy(right);
             case MINUS:
-                // TODO: handle non-number value
-                return -(double)right;
+                if (right instanceof Double) {
+                    return -(double)right;
+                }
+
+                throw new RuntimeError(expr.operator, "Operand must be a number");
         }
 
         return null;
