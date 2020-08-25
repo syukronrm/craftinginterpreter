@@ -50,7 +50,6 @@ public class Parser {
         Expr expr = commaExpression();
 
         while (match(QUESTION)) {
-            Token question = previous();
             Expr expr2 = commaExpression();
             consume(COLON, "Expect : after expression.");
             Expr expr3 = commaExpression();
