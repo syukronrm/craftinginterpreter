@@ -30,6 +30,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case BANG:
                 return !isTruthy(right);
             case MINUS:
+                // TODO: handle non-number value
                 return -(double)right;
         }
 
