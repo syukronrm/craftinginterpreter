@@ -50,10 +50,7 @@ public class Lox {
         );
 
         System.out.println(new AstPrinter().print(expression));
-        System.out.println(new AstPrinterRpn().print(expression));
-
         System.out.println(new AstPrinter().print(expression2));
-        System.out.println(new AstPrinterRpn().print(expression2));
     }
 
     private static void runFile(String path) throws IOException {
