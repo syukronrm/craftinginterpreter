@@ -49,8 +49,19 @@ public class Parser {
 
     private Stmt statement() {
         if (match(PRINT)) return printStatement();
+        if (match(LEFT_BRACE)) return blockStatement();
 
         return expressionStatement();
+    }
+
+    private Stmt blockStatement() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(declaration());
+        }
+
+        consume(RIGHT_BRACE, "Expect } after block.");
+        return new Stmt.Block(statements);
     }
 
     private Stmt printStatement() {
@@ -66,7 +77,25 @@ public class Parser {
     }
 
     private Expr expression() {
-        return ternaryExpression();
+        return assignment();
+    }
+
+    private Expr assignment() {
+        Expr expr = ternaryExpression();
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
     }
 
     private Expr ternaryExpression() {
