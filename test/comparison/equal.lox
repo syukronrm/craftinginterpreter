@@ -1,0 +1,3 @@
+print 1 == 1; // expect true
+
+print 1 == 0; // expect false
