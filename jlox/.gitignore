@@ -1,9 +1,6 @@
 # Ignore Gradle project-specific cache directory
 .gradle
 
-# Ignore
-list
-
 # Created by https://www.toptal.com/developers/gitignore/api/gradle
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle
 
