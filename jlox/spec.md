@@ -77,7 +77,7 @@ for (var a = 1; a < 10; a = a + 1) {
 
 makeBreakfast(bacon, eggs, toast);
 
-fun printSum(a, b) {
+fun printSum(a, b) { 
   print a + b;
 }
 
@@ -93,3 +93,21 @@ fun identity(a) {
 print identity(addPair)(1, 2); // Prints "3".
 
 ```
+
+Grammar:
+```
+expression     → equality ;
+equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+term           → factor ( ( "-" | "+" ) factor )* ;
+factor         → unary ( ( "/" | "*" ) unary )* ;
+unary          → ( "!" | "-" ) unary
+               | primary ;
+primary        → NUMBER | STRING | "true" | "false" | "nil"
+               | "(" expression ")" ;
+```
+
+
+100 / 100 / 100 + 100
+
+((100 / 100) / 100) + 100
