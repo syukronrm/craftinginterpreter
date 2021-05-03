@@ -9,14 +9,14 @@ abstract public class Expr {
     }
 
     static class Binary extends Expr {
-        final Expr expr1;
+        final Expr left;
         final Token operator;
-        final Expr expr2;
+        final Expr right;
 
-        Binary(Expr expr1, Token operator, Expr expr2) {
-            this.expr1 = expr1;
+        Binary(Expr left, Token operator, Expr right) {
+            this.left = left;
             this.operator = operator;
-            this.expr2 = expr2;
+            this.right = right;
         }
 
         <R> R accept(Visitor<R> visitor) {
@@ -25,12 +25,12 @@ abstract public class Expr {
     }
 
     static class Unary extends Expr {
-        final Expr expr;
+        final Expr expression;
         final Token operator;
 
-        Unary(Token operator, Expr expr) {
+        Unary(Token operator, Expr expression) {
             this.operator = operator;
-            this.expr = expr;
+            this.expression = expression;
         }
 
         <R> R accept(Visitor<R> visitor) {
@@ -39,10 +39,10 @@ abstract public class Expr {
     }
 
     static class Grouping extends Expr {
-        final Expr expr;
+        final Expr expression;
 
-        Grouping(Expr expr) {
-            this.expr = expr;
+        Grouping(Expr expression) {
+            this.expression = expression;
         }
 
         <R> R accept(Visitor<R> visitor) {

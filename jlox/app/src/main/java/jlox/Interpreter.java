@@ -26,8 +26,8 @@ public class Interpreter implements Visitor<Object> {
 
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
-        Object left = expr.expr1.accept(this);
-        Object right = expr.expr2.accept(this);
+        Object left = expr.left.accept(this);
+        Object right = expr.right.accept(this);
 
         switch (expr.operator.type) {
             case BANG_EQUAL: return !isEqual(left, right);
@@ -84,7 +84,7 @@ public class Interpreter implements Visitor<Object> {
 
     @Override
     public Object visitGroupingExpr(Expr.Grouping expr) {
-        return expr.expr.accept(this);
+        return expr.expression.accept(this);
     }
 
     @Override
