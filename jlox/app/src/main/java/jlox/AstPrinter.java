@@ -1,8 +1,25 @@
 package jlox;
 
-public class AstPrinter implements Expr.Visitor<String> {
+import java.util.List;
+
+public class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    String print(Stmt statement) {
+        return statement.accept(this);
+    }
+
+    String print(List<Stmt> statements) {
+        StringBuilder string = new StringBuilder();
+
+        for (Stmt stmt: statements) {
+            string.append(stmt.accept(this));
+            string.append("\n");
+        }
+
+        return string.toString();
     }
 
     @Override
@@ -25,11 +42,21 @@ public class AstPrinter implements Expr.Visitor<String> {
         return expr.value.toString();
     }
 
-    private String parenthesize(String name, Expr... exprs) {
+    @Override
+    public String visitExpression(Stmt.Expression expression) {
+        return parenthesize("", expression.expression);
+    }
+
+    @Override
+    public String visitPrint(Stmt.Print print) {
+        return parenthesize("print", print.expression);
+    }
+
+    private String parenthesize(String name, Expr... expressions) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("(").append(name);
-        for (Expr expr: exprs) {
+        for (Expr expr: expressions) {
             builder.append(" ");
             builder.append(expr.accept(this));
         }

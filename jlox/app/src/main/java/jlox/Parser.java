@@ -1,5 +1,6 @@
 package jlox;
 
+import java.util.ArrayList;
 import java.util.List;
 import static jlox.TokenType.*;
 
@@ -13,8 +14,29 @@ public class Parser {
         this.tokens = tokens;
     }
 
-    public Expr parse() {
-        return expression();
+    public List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        try {
+            while (!match(EOF)) {
+                Stmt stmt = statement();
+                statements.add(stmt);
+            }
+        } catch (ParseError error) {
+            return null;
+        }
+        return statements;
+    }
+
+    private Stmt statement() {
+        if (match(PRINT)) {
+            Expr expr = expression();
+            consume(SEMICOLON, "Expecting semicolon.");
+            return new Stmt.Print(expr);
+        }
+
+        Expr expr = expression();
+        consume(SEMICOLON, "Expecting semicolon.");
+        return new Stmt.Expression(expr);
     }
 
     private Expr expression() {

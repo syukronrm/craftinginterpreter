@@ -1,17 +1,10 @@
 package jlox;
 
-import jlox.Expr.Visitor;
-
 import java.util.List;
+
 import static jlox.TokenType.*;
 
-public class Interpreter implements Visitor<Object> {
-    void interpret(List<Expr> expressions) {
-        for (Expr expr : expressions) {
-            expr.accept(this);
-        }
-    }
-
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Object interpret(Expr expression) {
         Object object = null;
 
@@ -22,6 +15,18 @@ public class Interpreter implements Visitor<Object> {
         }
 
         return object;
+    }
+
+    public Void interpret(List<Stmt> statements) {
+        try {
+            for (Stmt statement: statements) {
+                statement.accept(this);
+            }
+        } catch (RuntimeError error) {
+            Lox.runtimeError(error);
+        }
+
+        return null;
     }
 
     @Override
@@ -90,6 +95,24 @@ public class Interpreter implements Visitor<Object> {
     @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
+    }
+
+    @Override
+    public Void visitExpression(Stmt.Expression expression) {
+        expression.expression.accept(this);
+        return null;
+    }
+
+    @Override
+    public Void visitPrint(Stmt.Print printStatement) {
+        Object object = printStatement.expression.accept(this);
+        System.out.println(stringify(object));
+        return null;
+    }
+
+    private String stringify(Object object) {
+        if (object == null) return "nil";
+        return object.toString();
     }
 
     private void checkNumberOperand(Token operator, Object operand) {
