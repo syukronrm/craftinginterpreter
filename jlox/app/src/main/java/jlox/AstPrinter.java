@@ -23,13 +23,23 @@ public class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     }
 
     @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        return null;
+    }
+
+    @Override
     public String visitBinaryExpr(Expr.Binary expr) {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right);
     }
 
     @Override
     public String visitUnaryExpr(Expr.Unary expr) {
-        return parenthesize(expr.operator.lexeme, expr.expression);
+        return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        return null;
     }
 
     @Override
@@ -43,12 +53,22 @@ public class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     }
 
     @Override
-    public String visitExpression(Stmt.Expression expression) {
+    public String visitVarStmt(Stmt.Var expr) {
+        return parenthesize("var " + expr.name + " = ", expr.initializer);
+    }
+
+    @Override
+    public String visitBlockStmt(Stmt.Block stmt) {
+        return null;
+    }
+
+    @Override
+    public String visitExpressionStmt(Stmt.Expression expression) {
         return parenthesize("", expression.expression);
     }
 
     @Override
-    public String visitPrint(Stmt.Print print) {
+    public String visitPrintStmt(Stmt.Print print) {
         return parenthesize("print", print.expression);
     }
 

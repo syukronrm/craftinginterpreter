@@ -30,6 +30,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitAssignExpr(Expr.Assign expr) {
+        return null;
+    }
+
+    @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = expr.left.accept(this);
         Object right = expr.right.accept(this);
@@ -88,6 +93,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return null;
+    }
+
+    @Override
     public Object visitGroupingExpr(Expr.Grouping expr) {
         return expr.expression.accept(this);
     }
@@ -98,15 +108,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
-    public Void visitExpression(Stmt.Expression expression) {
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        return null;
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression expression) {
         expression.expression.accept(this);
         return null;
     }
 
     @Override
-    public Void visitPrint(Stmt.Print printStatement) {
+    public Void visitPrintStmt(Stmt.Print printStatement) {
         Object object = printStatement.expression.accept(this);
         System.out.println(stringify(object));
+        return null;
+    }
+
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) {
         return null;
     }
 
