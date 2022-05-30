@@ -5,7 +5,8 @@ gen_ast:
 		&& java -cp build tool.GenerateAst app/src/main/java/jlox/
 
 compile:
-    javac -cp app/src/main/java -d build/ app/src/main/java/jlox/*.java
+	javac -cp app/src/main/java -d build/ app/src/main/java/jlox/*.java
 
 run: compile
 	java -cp build jlox.Lox
+
