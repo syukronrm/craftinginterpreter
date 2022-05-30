@@ -12,6 +12,7 @@ public class Lox {
     private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
+    static boolean hadEOF = false;
 
     // TODO: add debug mode to print the AST before evaluating.
     private boolean debugMode = false;
@@ -38,7 +39,7 @@ public class Lox {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-        for (;;) {
+        for (;!hadEOF;) {
             System.out.print("> ");
             run(reader.readLine());
             hadError = false;
@@ -46,6 +47,11 @@ public class Lox {
     }
 
     private static void run(String source) {
+        if (source == null) {
+            hadEOF = true;
+            return;
+        }
+
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens);
