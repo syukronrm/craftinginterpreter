@@ -2,8 +2,12 @@ package jlox;
 
 public class Token {
     final TokenType type;
+
+    // lexeme is literal string from the source text.
     final String lexeme;
+
     final Object literal;
+
     final int line;
 
     public Token(TokenType type, String lexeme, Object literal, int line) {

@@ -92,6 +92,12 @@ fun identity(a) {
 
 print identity(addPair)(1, 2); // Prints "3".
 
+var testA = "testA";
+{
+  var testA = "testAinside";
+}
+print testA;
+
 ```
 
 Grammar:
@@ -103,7 +109,9 @@ statement      → exprStmt
 
 exprStmt       → expression ";" ;
 printStmt      → "print" expression ";" ;
-expression     → equality ;
+expression     → assignment ;
+assignment     -> IDENTIFIER "=" assignment;
+                  | equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;

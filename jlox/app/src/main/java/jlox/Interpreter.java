@@ -5,7 +5,7 @@ import java.util.List;
 import static jlox.TokenType.*;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private final Environment environment = new Environment();
+    private Environment environment = new Environment();
 
     public Object interpret(Expr expression) {
         Object object = null;
@@ -22,13 +22,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement: statements) {
-                statement.accept(this);
+                execute(statement);
             }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
 
         return null;
+    }
+
+    public Void execute(Stmt statement) {
+        return statement.accept(this);
     }
 
     @Override
@@ -113,7 +117,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
         return null;
+    }
+
+    void executeBlock(List<Stmt> statements, Environment environment) {
+        Environment previous = this.environment;
+
+        try {
+            this.environment = environment;
+            for (Stmt statement: statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
     }
 
     @Override

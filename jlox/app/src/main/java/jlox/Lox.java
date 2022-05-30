@@ -13,6 +13,9 @@ public class Lox {
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
+    // TODO: add debug mode to print the AST before evaluating.
+    private boolean debugMode = false;
+
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
