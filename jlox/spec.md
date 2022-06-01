@@ -102,27 +102,38 @@ print testA;
 
 Grammar:
 ```
-program        → statement* EOF ;
-
-statement      → exprStmt
-               | printStmt ;
-
-exprStmt       → expression ";" ;
-printStmt      → "print" expression ";" ;
-expression     → assignment ;
-assignment     -> IDENTIFIER "=" assignment;
-                  | equality ;
-equality       → comparison ( ( "!=" | "==" ) comparison )* ;
-comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
-term           → factor ( ( "-" | "+" ) factor )* ;
-factor         → unary ( ( "/" | "*" ) unary )* ;
-unary          → ( "!" | "-" ) unary
-               | primary ;
-primary        → NUMBER | STRING | "true" | "false" | "nil"
-               | "(" expression ")" ;
+program         -> declaration* EOF ;
+declaration     -> varDeclaration
+                   | statement ;
+varDeclaration  -> "var" IDENTIFIER ( "=" expression ) ;
+statement       -> exprStmt
+                   | blockStmt
+                   | printStmt ;
+blockStmt       -> "{" declaration* "}" ;
+exprStmt        -> expression ";" ;
+printStmt       -> "print" expression ";" ;
+expression      -> assignment ;
+assignment      -> IDENTIFIER "=" assignment;
+                   | equality ;
+equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
+comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+term            -> factor ( ( "-" | "+" ) factor )* ;
+factor          -> unary ( ( "/" | "*" ) unary )* ;
+unary           -> ( "!" | "-" ) unary
+                   | primary ;
+primary         -> NUMBER | STRING | "true" | "false" | "nil"
+                   | "(" expression ")" ;
 ```
 
+REPL:
+```
+> var a = "yes"; a
+yes
 
-100 / 100 / 100 + 100
+> "test"
+test
 
-((100 / 100) / 100) + 100
+> 100 == 100;
+true
+
+``

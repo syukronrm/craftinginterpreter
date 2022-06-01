@@ -9,9 +9,20 @@ public class Parser {
 
     private final List<Token> tokens;
     private int current = 0;
+    private boolean isRepl = false;
+    private boolean isPrintLastStatement = false;
+
+    Parser(List<Token> tokens, boolean isRepl) {
+        this.isRepl = isRepl;
+        this.tokens = tokens;
+    }
 
     Parser(List<Token> tokens) {
-        this.tokens = tokens;
+        this(tokens, false);
+    }
+
+    public boolean isPrintLastStatement() {
+        return isPrintLastStatement;
     }
 
     public List<Stmt> parse() {
@@ -56,7 +67,12 @@ public class Parser {
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         Expr expr = expression();
-        consume(SEMICOLON, "Expecting semicolon.");
+        if (isRepl && isAtEnd()) {
+            isPrintLastStatement = true;
+            advance();
+        } else {
+            consume(SEMICOLON, "Expecting semicolon.");
+        }
         return new Stmt.Expression(expr);
     }
 

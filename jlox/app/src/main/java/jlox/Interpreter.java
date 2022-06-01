@@ -7,6 +7,10 @@ import static jlox.TokenType.*;
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = new Environment();
 
+    // These are for returning value when
+    private boolean isLastStatement = false;
+    private Object lastExpressionValue;
+
     public Object interpret(Expr expression) {
         Object object = null;
 
@@ -21,7 +25,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     public Void interpret(List<Stmt> statements) {
         try {
+            Stmt lastStatement = statements.get(statements.size() - 1);
             for (Stmt statement: statements) {
+                if (statement.equals(lastStatement)) {
+                    isLastStatement = true;
+                }
+
                 execute(statement);
             }
         } catch (RuntimeError error) {
@@ -134,9 +143,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
     }
 
+    public Object getLastExpressionValue() {
+        return this.lastExpressionValue;
+    }
+
     @Override
     public Void visitExpressionStmt(Stmt.Expression expression) {
-        expression.expression.accept(this);
+        Object val = expression.expression.accept(this);
+        if (isLastStatement) {
+            lastExpressionValue = val;
+        }
         return null;
     }
 

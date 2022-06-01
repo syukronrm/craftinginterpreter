@@ -14,6 +14,8 @@ public class Lox {
     static boolean hadRuntimeError = false;
     static boolean hadEOF = false;
 
+    static boolean isRepl = false;
+
     // TODO: add debug mode to print the AST before evaluating.
     private boolean debugMode = false;
 
@@ -24,6 +26,7 @@ public class Lox {
         } else if (args.length == 1) {
             runFile(args[0]);
         } else {
+            isRepl = true;
             runPrompt();
         }
     }
@@ -39,26 +42,36 @@ public class Lox {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-        for (;!hadEOF;) {
+        while (!hadEOF) {
             System.out.print("> ");
-            run(reader.readLine());
+            Object val = run(reader.readLine());
             hadError = false;
+
+            if (val != null) {
+                System.out.println(val);
+            }
         }
     }
 
-    private static void run(String source) {
+    private static Object run(String source) {
         if (source == null) {
             hadEOF = true;
-            return;
+            return null;
         }
 
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-        Parser parser = new Parser(tokens);
+        Parser parser = new Parser(tokens, isRepl);
         List<Stmt> statements = parser.parse();
 
-        if (hadError) return;
+        if (hadError) return null;
         interpreter.interpret(statements);
+
+        if (parser.isPrintLastStatement()) {
+            return interpreter.getLastExpressionValue();
+        }
+
+        return null;
     }
 
     static void error(int line, String message) {
