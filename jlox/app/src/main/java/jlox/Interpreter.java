@@ -40,6 +40,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    public Void executeNullable(Stmt statement) {
+        if (statement == null) {
+            return null;
+        }
+        return execute(statement);
+    }
+
     public Void execute(Stmt statement) {
         return statement.accept(this);
     }
@@ -198,6 +205,29 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         environment.define(stmt.name.lexeme, value);
         return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        while (isTruthy(evaluate(stmt.condition))) {
+            stmt.body.accept(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitForStmt(Stmt.For stmt) {
+        for (executeNullable(stmt.initializer); isTruthy(evaluateNullable(stmt.condition)); evaluateNullable(stmt.advancement)) {
+            execute(stmt.body);
+        }
+        return null;
+    }
+
+    private Object evaluateNullable(Expr expr) {
+        if (expr == null) {
+            return null;
+        }
+        return evaluate(expr);
     }
 
     private Object evaluate(Expr expr) {

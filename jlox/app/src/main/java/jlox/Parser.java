@@ -81,6 +81,14 @@ public class Parser {
             return ifStatement();
         }
 
+        if (match(WHILE)) {
+            return whileStatement();
+        }
+
+        if (match(FOR)) {
+            return forStatement();
+        }
+
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
 
         Expr expr = expression();
@@ -93,6 +101,43 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
+    private Stmt forStatement() {
+        consume(LEFT_PAREN, "Expecting `(` for `for` loop");
+
+        Stmt initializer = null;
+        if (peek().type == SEMICOLON) {
+            consume(SEMICOLON, "Expect first `;` for empty initializer in `for`");
+        } else if (match(VAR)) {
+            initializer = varDeclaration();
+        } else {
+            initializer = expressionStatement();
+        }
+
+        Expr condition = null;
+        if (peek().type != SEMICOLON) {
+            condition = expression();
+        }
+        consume(SEMICOLON, "Expect second `;` after condition expression in `for`");
+
+        Expr advancement = null;
+        if (peek().type != RIGHT_PAREN) {
+            advancement = expression();
+        }
+        consume(RIGHT_PAREN, "Expecting `)` for `for` loop");
+        Stmt body = statement();
+
+        return new Stmt.For(initializer, condition, advancement, body);
+    }
+
+    private Stmt whileStatement() {
+        consume(LEFT_PAREN, "Expect `(` left parenthesis for `while`");
+        Expr condition = expression();
+        consume(RIGHT_PAREN, "Expect `)` right parenthesis for `while`");
+        Stmt body = statement();
+
+        return new Stmt.While(condition, body);
+    }
+
     private List<Stmt> block() {
         List<Stmt> statements = new ArrayList<>();
 
@@ -102,6 +147,12 @@ public class Parser {
 
         consume(RIGHT_BRACE, "Expect '}' after block;");
         return statements;
+    }
+
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expect `;` after an expression");
+        return new Stmt.Expression(expr);
     }
 
     private Expr expression() {

@@ -75,6 +75,10 @@ for (var a = 1; a < 10; a = a + 1) {
   print a;
 }
 
+for (;;) {
+  print a;
+}
+
 makeBreakfast(bacon, eggs, toast);
 
 fun printSum(a, b) { 
@@ -105,11 +109,17 @@ Grammar:
 program         -> declaration* EOF ;
 declaration     -> varDeclaration
                    | statement ;
-varDeclaration  -> "var" IDENTIFIER ( "=" expression )? ;
+varDeclaration  -> "var" IDENTIFIER ( "=" expression )? ";" ;
 statement       -> exprStmt
                    | ifStmt
                    | blockStmt
+                   | whileStmt
+                   | forStmt
                    | printStmt ;
+whileStmt       -> "while" "(" expression ")" statement;
+forStmt         -> "for" "(" ( varDeclaration | expression | ";" )
+                        ( expression )? ";"
+                        ( expression )? ")" statement ;
 ifStmt          -> "if" "(" expression ")" statement
                    ( "else" statement )? ;
 blockStmt       -> "{" declaration* "}" ;
