@@ -1,1 +1,1 @@
-jlox/spec.md
+./spec.md
