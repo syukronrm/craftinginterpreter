@@ -96,6 +96,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Object leftVal = evaluate(expr.left);
+        if (expr.operator.type == OR) {
+            if (isTruthy(leftVal)) {
+                return leftVal;
+            }
+        } else {
+            if (!isTruthy(leftVal)) {
+                return leftVal;
+            }
+        }
+
+        return evaluate(expr.right);
+    }
+
+    @Override
     public Object visitUnaryExpr(Expr.Unary expr) {
         Object object = expr.accept(this);
 
@@ -152,6 +168,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object val = expression.expression.accept(this);
         if (isLastStatement) {
             lastExpressionValue = val;
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            stmt.thenBranch.accept(this);
+        } else {
+            stmt.elseBranch.accept(this);
         }
         return null;
     }

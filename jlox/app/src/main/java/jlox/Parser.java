@@ -57,11 +57,28 @@ public class Parser {
         return new Stmt.Var(name, init);
     }
 
+    private Stmt ifStatement() {
+        consume(LEFT_PAREN, "Expect `(` left parenthesis");
+        Expr expr = expression();
+        consume(RIGHT_PAREN, "Expect `)` right parenthesis");
+        Stmt thenStmt = statement();
+
+        Stmt elseStmt = null;
+        if (match(ELSE)) {
+            elseStmt = statement();
+        }
+        return new Stmt.If(expr, thenStmt, elseStmt);
+    }
+
     private Stmt statement() {
         if (match(PRINT)) {
             Expr expr = expression();
             consume(SEMICOLON, "Expecting semicolon.");
             return new Stmt.Print(expr);
+        }
+
+        if (match(IF)) {
+            return ifStatement();
         }
 
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
@@ -92,7 +109,7 @@ public class Parser {
     }
 
     private Expr assignment() {
-        Expr expr = equality();
+        Expr expr = logicOr();
 
         if (match(EQUAL)) {
             Token equals = previous();
@@ -107,6 +124,30 @@ public class Parser {
         }
 
         return expr;
+    }
+
+    private Expr logicOr() {
+        Expr left = logicAnd();
+
+        if (match(OR)) {
+            Token token = previous();
+            Expr right = logicAnd();
+            return new Expr.Logical(left, token, right);
+        }
+
+        return left;
+    }
+
+    private Expr logicAnd() {
+        Expr left = equality();
+
+        if (match(AND)) {
+            Token token = previous();
+            Expr right = equality();
+            return new Expr.Logical(left, token, right);
+        }
+
+        return left;
     }
 
     private Expr equality() {

@@ -105,16 +105,21 @@ Grammar:
 program         -> declaration* EOF ;
 declaration     -> varDeclaration
                    | statement ;
-varDeclaration  -> "var" IDENTIFIER ( "=" expression ) ;
+varDeclaration  -> "var" IDENTIFIER ( "=" expression )? ;
 statement       -> exprStmt
+                   | ifStmt
                    | blockStmt
                    | printStmt ;
+ifStmt          -> "if" "(" expression ")" statement
+                   ( "else" statement )? ;
 blockStmt       -> "{" declaration* "}" ;
 exprStmt        -> expression ";" ;
 printStmt       -> "print" expression ";" ;
 expression      -> assignment ;
 assignment      -> IDENTIFIER "=" assignment;
-                   | equality ;
+                   | logic_or ;
+logic_or        -> logic_and ( "or" logic_and ) ;
+logic_and       -> equality ( "and" equality ) ;
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
 comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term            -> factor ( ( "-" | "+" ) factor )* ;

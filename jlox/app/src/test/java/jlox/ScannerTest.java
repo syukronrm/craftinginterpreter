@@ -2,6 +2,8 @@ package jlox;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static jlox.TokenType.*;
@@ -9,8 +11,13 @@ import static jlox.TokenType.*;
 public class ScannerTest {
     @Test
     public void testNumber() {
-        List<Token> tokens = this.scan("123.11 123");
-        assertEquals(3, tokens.size());
+        List<Token> tokens = this.scan("123.9 123");
+        List<Token> expectedTokens = new ArrayList<>(Arrays.asList(
+            new Token(NUMBER, "123.9", Double.parseDouble("123.9"), 1),
+            new Token(NUMBER, "123", Double.parseDouble("123"), 1),
+            new Token(EOF, "", null, 1)
+        ));
+        assertEquals(expectedTokens, tokens);
     }
 
     @Test
